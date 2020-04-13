@@ -2,6 +2,7 @@ from vk_api import VkApi
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType,VkBotMessageEvent
 import random
 import datetime
+import request
 
 
 class deadLine:
@@ -31,7 +32,7 @@ def newElem(deadLine, head):
             if deadLine.date >= curr.date and not curr.next:
                 curr.next = deadLine
                 break
-            if deadLine.date >= curr.date and deadline.date<=curr.next.date:
+            if deadLine.date >= curr.date and deadLine.date<=curr.next.date:
                 deadLine.next = curr.next
                 curr.next = deadLine
                 break
@@ -82,38 +83,41 @@ def autoDel(head):
 #vk_session = vk_api.VkApi(login, password, scope = 'messages')
 #vk_session.auth()
 
-token = ""
+token = "b212e808e685d53bae44e644ec8970c51ea2bb73c45a781e0c15ca326ed613c37fbd031148241174fc0b1"
 vk_session = VkApi(token = token)
 
 
 session_api = vk_session.get_api()
-longpoll = VkBotLongPoll(vk_session, "194170086")
 head = createLinkedList()
 
 while True:
-    for event in longpoll.listen():
-        if event.type == VkBotEventType.MESSAGE_NEW:
-            head = autoDel(head)
-            if event.from_user and (event.obj['from_id'] == 176002643 or event.obj['from_id'] == 301186592):
-                response = event.obj['text']
-                if response.find("Удали") == 0:
-                    head = removeEl(head, response[6:])
-                    continue
-                if response.find("Добавь") == 0:   
-                    responseMes = response[7:].split('.')
-                    date = datetime.datetime(2020, int(responseMes[0]), int(responseMes[1]), int(responseMes[2]), int(responseMes[3]))
-                    new = deadLine(date, responseMes[4])
-                    head = newElem(new, head)
-                    continue
-            if event.from_user:
-                message = event.obj['text']
-                response = message.lower()
-                if response.find("андрей сергеевич,") == 0 and (response.find("дедлайны") != -1 or response.find("дедлайн") != -1 or response.find("сроки") != -1):
-                    send_message_user(session_api, event.obj['from_id'], message=printLL(head))
-                    continue
-            if event.from_chat:
-                message = event.obj['text']
-                response = message.lower()
-                if response.find("андрей сергеевич,") == 0 and (response.find("дедлайны") != -1 or response.find("дедлайн") != -1 or response.find("сроки") != -1):
-                    send_message_chat(session_api, event.obj['peer_id'], message=printLL(head))
-                    continue
+    longpoll = VkBotLongPoll(vk_session, "194170086")
+    try:
+        for event in longpoll.listen():
+            if event.type == VkBotEventType.MESSAGE_NEW:
+                head = autoDel(head)
+                if event.from_user and (event.obj['from_id'] == 176002643 or event.obj['from_id'] == 301186592):
+                    response = event.obj['text']
+                    if response.find("Удали") == 0:
+                        head = removeEl(head, response[6:])
+                        continue
+                    if response.find("Добавь") == 0:   
+                        responseMes = response[7:].split('.')
+                        date = datetime.datetime(2020, int(responseMes[0]), int(responseMes[1]), int(responseMes[2]), int(responseMes[3]))
+                        new = deadLine(date, responseMes[4])
+                        head = newElem(new, head)
+                        continue
+                if event.from_user:
+                    message = event.obj['text']
+                    response = message.lower()
+                    if response.find("андрей сергеевич,") == 0 and (response.find("дедлайны") != -1 or response.find("дедлайн") != -1 or response.find("сроки") != -1):
+                        send_message_user(session_api, event.obj['from_id'], message=printLL(head))
+                        continue
+                if event.from_chat:
+                    message = event.obj['text']
+                    response = message.lower()
+                    if response.find("андрей сергеевич,") == 0 and (response.find("дедлайны") != -1 or response.find("дедлайн") != -1 or response.find("сроки") != -1):
+                        send_message_chat(session_api, event.obj['peer_id'], message=printLL(head))
+                        continue
+    except request.exceptions.ReadTimeout as timeout:
+        continue
