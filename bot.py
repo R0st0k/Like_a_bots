@@ -1,7 +1,7 @@
-import vk_api
-from vk_api.longpoll import VkLongPoll, VkEventType
+from vk_api import VkApi
+from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 import random
-import datetime
+from random import datetime
 
 
 class deadLine:
@@ -10,8 +10,8 @@ class deadLine:
         self.task = task
         self.next = None
 
-def send_message(vk_session, id_type, id, message=None, attachment=None, keyboard=None):
-    vk_session.method('messages.send',{id_type: id, 'message': message, 'random_id': random.randint(-2147483648, +2147483648), "attachment": attachment, 'keyboard': keyboard})
+def send_message(session_api, id_type, id, message=None, attachment=None, keyboard=None):
+    session_api.messages.send(id_type: id, 'message': message, 'random_id': random.randint(-2147483648, +2147483648), "attachment": attachment, 'keyboard': keyboard)
 
 def createLinkedList():
     head = DeadLine(datetime.datetime(2023, 5, 31, 23, 59), "Дипломная работа")
@@ -76,20 +76,20 @@ def autoDel(head):
     return head    
 
 #login, password = "", ""
-#vk_session = vk_api.VkApi(login, password, scope = 140488159)
+#vk_session = vk_api.VkApi(login, password, scope = 'messages')
 #vk_session.auth()
 
 token = ""
-vk_session = vk_api.VkApi(token = token)
+vk_session = VkApi(token = token)
 
 
 session_api = vk_session.get_api()
-longpoll = VkLongPoll(vk_session)
+longpoll = VkBotLongPoll(vk_session, "194170086", scope='messages')
 head = createLinkedList()
 
 while True:
     for event in longpoll.listen():
-        if event.type == VkEventType.MESSAGE_NEW and not event.from_me:
+        if event.type == VkBotEventType.MESSAGE_NEW and not event.from_me:
             head = autoDel(head)
             if event.from_user and (event.user_id == 176002643 or event.user_id == 301186592):
                 response = event.text
@@ -105,10 +105,10 @@ while True:
             if event.from_user:
                 response = event.text.lower()
                 if response.find("андрей сергеевич,") == 0 and (response.find("дедлайны") != -1 or response.find("дедлайн") != -1 or response.find("сроки") != -1):
-                    send_message(vk_session, 'user_id', event.user_id, message=printLL(head))
+                    send_message(session_api, 'user_id', event.user_id, message=printLL(head))
                     continue
             if event.from_chat:
                 response = event.text.lower()
                 if response.find("андрей сергеевич,") == 0 and (response.find("дедлайны") != -1 or response.find("дедлайн") != -1 or response.find("сроки") != -1):
-                    send_message(vk_session, 'chat_id', event.chat_id, message=printLL(head))
+                    send_message(session_api, 'chat_id', event.chat_id, message=printLL(head))
                     continue
