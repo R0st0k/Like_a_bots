@@ -90,7 +90,7 @@ head = createLinkedList()
 while True:
     for event in longpoll.listen():
         if event.type == VkEventType.MESSAGE_NEW and not event.from_me:
-            head = autoDel()
+            head = autoDel(head)
             if event.from_user and (event.user_id == 176002643 or event.user_id == 301186592):
                 response = event.text
                 if response.find("Удали") == 0:
