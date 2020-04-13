@@ -94,13 +94,13 @@ while True:
             if event.from_user and (event.user_id == 176002643 or event.user_id == 301186592):
                 response = event.text
                 if response.find("Удали") == 0:
-                    removeEl(head, response[6:])
+                    head = removeEl(head, response[6:])
                     continue
                 if response.find("Добавь") == 0:   
                     responseMes = response[7:].split('.')
                     date = datetime.datetime(2020, int(responseMes[0]), int(responseMes[1]), int(responseMes[2]), int(responseMes[3]))
                     new = deadLine(date, responseMes[4])
-                    newElem(new, head)
+                    head = newElem(new, head)
             if event.from_chat:
                 response = event.text.lower()
                 if response.find("андрей сергеевич,") == 0 and (response.find("дедлайны") != -1 or response.find("дедлайн") != -1 or response.find("сроки") != -1):
