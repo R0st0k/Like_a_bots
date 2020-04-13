@@ -66,7 +66,7 @@ def autoDel(head):
     if(head):
         now = datetime.now()
         curr = head
-        while curr.date <= now and 
+        while curr.date <= now: 
             if(curr.next):
                 curr = curr.next
                 head = head.next
