@@ -101,7 +101,14 @@ while True:
                     date = datetime.datetime(2020, int(responseMes[0]), int(responseMes[1]), int(responseMes[2]), int(responseMes[3]))
                     new = deadLine(date, responseMes[4])
                     head = newElem(new, head)
+                    continue
+            if event.from_user:
+                response = event.text.lower()
+                if response.find("андрей сергеевич,") == 0 and (response.find("дедлайны") != -1 or response.find("дедлайн") != -1 or response.find("сроки") != -1):
+                    send_message(vk_session, 'user_id', event.user_id, message=printLL(head))
+                    continue
             if event.from_chat:
                 response = event.text.lower()
                 if response.find("андрей сергеевич,") == 0 and (response.find("дедлайны") != -1 or response.find("дедлайн") != -1 or response.find("сроки") != -1):
                     send_message(vk_session, 'chat_id', event.chat_id, message=printLL(head))
+                    continue
