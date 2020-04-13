@@ -1,7 +1,7 @@
 from vk_api import VkApi
-from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
+from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType,VkBotMessageEvent
 import random
-from random import datetime
+import datetime
 
 
 class deadLine:
@@ -10,11 +10,14 @@ class deadLine:
         self.task = task
         self.next = None
 
-def send_message(session_api, id_type, id, message=None, attachment=None, keyboard=None):
-    session_api.messages.send(id_type: id, 'message': message, 'random_id': random.randint(-2147483648, +2147483648), "attachment": attachment, 'keyboard': keyboard)
+def send_message_chat(session_api, id, message=None, attachment=None, keyboard=None):
+    session_api.messages.send(peer_id = id, message = message, random_id = random.randint(-2147483648, +2147483648), attachment = attachment, keyboard = keyboard)
+    
+def send_message_user(session_api, id, message=None, attachment=None, keyboard=None):
+    session_api.messages.send(user_id = id, message = message, random_id = random.randint(-2147483648, +2147483648), attachment = attachment, keyboard = keyboard)
 
 def createLinkedList():
-    head = DeadLine(datetime.datetime(2023, 5, 31, 23, 59), "Дипломная работа")
+    head = deadLine(datetime.datetime(2023, 5, 31, 23, 59), "Дипломная работа")
     return head
 
 def newElem(deadLine, head):
@@ -64,7 +67,7 @@ def printLL(head):
     
 def autoDel(head):
     if(head):
-        now = datetime.now()
+        now = datetime.datetime.today()
         curr = head
         while curr.date <= now: 
             if(curr.next):
@@ -84,15 +87,15 @@ vk_session = VkApi(token = token)
 
 
 session_api = vk_session.get_api()
-longpoll = VkBotLongPoll(vk_session, "194170086", scope='messages')
+longpoll = VkBotLongPoll(vk_session, "194170086")
 head = createLinkedList()
 
 while True:
     for event in longpoll.listen():
-        if event.type == VkBotEventType.MESSAGE_NEW and not event.from_me:
+        if event.type == VkBotEventType.MESSAGE_NEW:
             head = autoDel(head)
-            if event.from_user and (event.user_id == 176002643 or event.user_id == 301186592):
-                response = event.text
+            if event.from_user and (event.obj['from_id'] == 176002643 or event.obj['from_id'] == 301186592):
+                response = event.obj['text']
                 if response.find("Удали") == 0:
                     head = removeEl(head, response[6:])
                     continue
@@ -103,12 +106,14 @@ while True:
                     head = newElem(new, head)
                     continue
             if event.from_user:
-                response = event.text.lower()
+                message = event.obj['text']
+                response = message.lower()
                 if response.find("андрей сергеевич,") == 0 and (response.find("дедлайны") != -1 or response.find("дедлайн") != -1 or response.find("сроки") != -1):
-                    send_message(session_api, 'user_id', event.user_id, message=printLL(head))
+                    send_message_user(session_api, event.obj['from_id'], message=printLL(head))
                     continue
             if event.from_chat:
-                response = event.text.lower()
+                message = event.obj['text']
+                response = message.lower()
                 if response.find("андрей сергеевич,") == 0 and (response.find("дедлайны") != -1 or response.find("дедлайн") != -1 or response.find("сроки") != -1):
-                    send_message(session_api, 'chat_id', event.chat_id, message=printLL(head))
+                    send_message_chat(session_api, event.obj['peer_id'], message=printLL(head))
                     continue
