@@ -18,7 +18,7 @@ def send_message_user(session_api, id, message=None, attachment=None, keyboard=N
     session_api.messages.send(user_id = id, message = message, random_id = random.randint(-2147483648, +2147483648), attachment = attachment, keyboard = keyboard)
 
 def createLinkedList():
-    head = deadLine(datetime.datetime(2023, 5, 31, 23, 59), "Дипломная работа")
+    head = deadLine(datetime.datetime(2020, 4, 15, 23, 59), "Дипломная работа")
     return head
 
 def newElem(deadLine, head):
@@ -65,7 +65,41 @@ def printLL(head):
     else:
         answer = 'Так это, у вас ничего нет'
     return answer
-    
+
+def pushNote(head):
+    now = datetime.datetime.today()
+    answer = ''
+    curr = head
+    if curr != None:
+        delta = curr.date - now
+    else:
+        return answer
+    one = False
+    three = False
+    while delta.days == 0:
+        if not one:
+            answer = answer+'Сроки, до которых меньше 1 дня:\n'
+            one = True
+        answer = answer+str(curr.date.strftime("%d.%m %H:%M - "))+curr.task+'\n'
+        if curr.next != None:
+            curr = curr.next
+            delta = curr.date - now
+        else:
+            return answer
+    if one:
+        answer = answer + '\n'
+    while 1 <= delta.days <= 2:
+        if not three :
+            answer = answer+'Сроки, до которых меньше 3 дней:\n'
+            three = True
+        answer = answer+str(curr.date.strftime("%d.%m %H:%M - "))+curr.task+'\n'
+        if curr.next != None:
+            curr = curr.next
+            delta = curr.date - now
+        else:
+            return answer
+    return answer
+
 def autoDel(head):
     if(head):
         now = datetime.datetime.today()
@@ -89,10 +123,16 @@ vk_session = VkApi(token = token)
 
 session_api = vk_session.get_api()
 head = createLinkedList()
+group_chat = {'9303' : 2000000001}
 
 while True:
     longpoll = VkBotLongPoll(vk_session, "194170086")
     try:
+        head = autoDel(head)
+        push = pushNote(head)
+        print(push)
+        if push != '':
+            send_message_chat(session_api, group_chat['9303'], message=push)
         for event in longpoll.listen():
             if event.type == VkBotEventType.MESSAGE_NEW:
                 head = autoDel(head)
