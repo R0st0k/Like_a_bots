@@ -196,5 +196,5 @@ while True:
                     if response.find("андрей сергеевич,") == 0 and (response.find("deadline") != -1 or response.find("дедлайн") != -1 or response.find("срок") != -1):
                         send_message_chat(session_api, event.obj['peer_id'], message=printLL(head))
                         continue
-    except request.exceptions.ReadTimeout as timeout:
+    except requests.exceptions.ReadTimeout as timeout:
         continue
