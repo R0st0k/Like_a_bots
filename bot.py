@@ -17,12 +17,45 @@ def send_message_chat(session_api, id, message=None, attachment=None, keyboard=N
 def send_message_user(session_api, id, message=None, attachment=None, keyboard=None):
     session_api.messages.send(user_id = id, message = message, random_id = random.randint(-2147483648, +2147483648), attachment = attachment, keyboard = keyboard)
 
+def createdeadLine(input_line):
+    if True:
+        true_line = input_line.split('.')
+        date = datetime.datetime(2020, int(true_line[0]), int(true_line[1]), int(true_line[2]), int(true_line[3]))
+        new = deadLine(date, true_line[4])
+        return new
+    else:
+        return None
+
+def logBack(head):
+    File = open('9303.txt', 'w')
+    if head:
+        curr = head
+        while curr:
+            File.write(str(curr.date.strftime("%m.%d.%H.%M."))+curr.task+'\n')
+            curr = curr.next
+    File.close()
+    
+
 def createLinkedList():
-    head = deadLine(datetime.datetime(2020, 4, 15, 23, 59), "Дипломная работа")
+    File = open('9303.txt', 'r')
+    Tasks = [line.strip() for line in File]
+    if Tasks == []:
+        File.close()
+        return None
+    else:
+        head = createdeadLine(Tasks[0])
+        Tasks.remove(Tasks[0])
+    curr = head
+    while Tasks:
+        new = createdeadLine(Tasks[0])
+        curr.next = new
+        curr = new
+        Tasks.remove(Tasks[0])
+    File.close()
     return head
 
 def newElem(deadLine, head):
-    if(head):
+    if head and deadLine:
         curr = head
         while(curr):
             if deadLine.date <= curr.date:
@@ -37,13 +70,15 @@ def newElem(deadLine, head):
                 curr.next = deadLine
                 break
             curr = curr.next
-    else:
+        logBack(head)
+    elif deadLine:
         head = deadLine
+        logBack(head)
     return head
     
 
 def removeEl(head, task):
-    if(head):
+    if head and task:
         curr = head
         if head.task == task:
             head = head.next
@@ -53,6 +88,7 @@ def removeEl(head, task):
                 curr.next=curr.next.next
                 break
             curr = curr.next
+        logBack(head)
     return head
 
 def printLL(head):
@@ -67,10 +103,10 @@ def printLL(head):
     return answer
 
 def pushNote(head):
-    now = datetime.datetime.today()
     answer = ''
     curr = head
     if curr != None:
+        now = datetime.datetime.today()
         delta = curr.date - now
     else:
         return answer
@@ -111,6 +147,7 @@ def autoDel(head):
             else:
                 head = None
                 break
+        logBack(head)
     return head    
 
 #login, password = "", ""
@@ -130,7 +167,6 @@ while True:
     try:
         head = autoDel(head)
         push = pushNote(head)
-        print(push)
         if push != '':
             send_message_chat(session_api, group_chat['9303'], message=push)
         for event in longpoll.listen():
@@ -141,22 +177,19 @@ while True:
                     if response.find("Удали") == 0:
                         head = removeEl(head, response[6:])
                         continue
-                    if response.find("Добавь") == 0:   
-                        responseMes = response[7:].split('.')
-                        date = datetime.datetime(2020, int(responseMes[0]), int(responseMes[1]), int(responseMes[2]), int(responseMes[3]))
-                        new = deadLine(date, responseMes[4])
-                        head = newElem(new, head)
+                    if response.find("Добавь") == 0:
+                        head = newElem(createdeadLine(response[7:]), head)
                         continue
                 if event.from_user:
                     message = event.obj['text']
                     response = message.lower()
-                    if response.find("андрей сергеевич,") == 0 and (response.find("дедлайны") != -1 or response.find("дедлайн") != -1 or response.find("сроки") != -1):
+                    if response.find("андрей сергеевич,") == 0 and (response.find("deadline") != -1 or response.find("дедлайн") != -1 or response.find("срок") != -1):
                         send_message_user(session_api, event.obj['from_id'], message=printLL(head))
                         continue
                 if event.from_chat:
                     message = event.obj['text']
                     response = message.lower()
-                    if response.find("андрей сергеевич,") == 0 and (response.find("дедлайны") != -1 or response.find("дедлайн") != -1 or response.find("сроки") != -1):
+                    if response.find("андрей сергеевич,") == 0 and (response.find("deadline") != -1 or response.find("дедлайн") != -1 or response.find("срок") != -1):
                         send_message_chat(session_api, event.obj['peer_id'], message=printLL(head))
                         continue
     except request.exceptions.ReadTimeout as timeout:
