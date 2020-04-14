@@ -37,7 +37,11 @@ def logBack(head):
     
 
 def createLinkedList():
-    File = open('9303.txt', 'r')
+    try:
+        File = open('9303.txt', 'r')
+    except FileNotFoundError:
+        File = open('9303.txt', 'w')
+        return None
     Tasks = [line.strip() for line in File]
     if Tasks == []:
         File.close()
