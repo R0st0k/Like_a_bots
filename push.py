@@ -111,16 +111,17 @@ def autoDel(head):
 #vk_session = vk_api.VkApi(login, password, scope = 'messages')
 #vk_session.auth()
 
-token = "d934fe95dc96044df125497fb7508674cd0550ccfcb40aaf2e21ba963e015739e5738d3bf3e5dd028b341"
+token = ""
 vk_session = VkApi(token = token)
 
 
 session_api = vk_session.get_api()
 head = createLinkedList()
-group_chat = {'9303' : 2000000001}
+group_chat = {'9303' : 2000000003}
 
 head = autoDel(head)
 push = pushNote(head)
 print(push)
 if push != '':
     send_message_chat(session_api, group_chat['9303'], message=push)
+
