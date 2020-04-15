@@ -3,6 +3,7 @@ from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType,VkBotMessageEvent
 import random
 import datetime
 import request
+import re
 
 
 class deadLine:
@@ -18,7 +19,7 @@ def send_message_user(session_api, id, message=None, attachment=None, keyboard=N
     session_api.messages.send(user_id = id, message = message, random_id = random.randint(-2147483648, +2147483648), attachment = attachment, keyboard = keyboard)
 
 def createdeadLine(input_line):
-    if True:
+    if re.fullmatch(r'([1-9]|0[1-9]|1[0-2])\.([1-9]|[012][0-9]|3[0-1])\.([0-9]|[01][0-9]|2[0-3])\.([0-9]|[0-5][0-9])\..+', input_line):
         true_line = input_line.split('.')
         date = datetime.datetime(2020, int(true_line[0]), int(true_line[1]), int(true_line[2]), int(true_line[3]))
         new = deadLine(date, true_line[4])
@@ -31,7 +32,7 @@ def logBack(head):
     if head:
         curr = head
         while curr:
-            File.write(str(curr.date.strftime("%m.%d.%H.%M."))+curr.task+'\n')
+            File.write(str(curr.date.strftime("%m.%e.%H.%M."))+curr.task+'\n')
             curr = curr.next
     File.close()
     
@@ -198,3 +199,4 @@ while True:
                         continue
     except requests.exceptions.ReadTimeout as timeout:
         continue
+
