@@ -5,7 +5,6 @@ import datetime
 import request
 import re
 
-
 class deadLine:
     def __init__(self, date, task):
         self.date = date
@@ -121,6 +120,9 @@ def autoDel(head):
         logBack(head)
     return head    
 
+attachment = { 'hat' : ['photo-194170086_457239019','photo-194170086_457239020','photo-194170086_457239021'],
+                'yes' : ['photo-194170086_457239022']}
+
 #login, password = "", ""
 #vk_session = vk_api.VkApi(login, password, scope = 'messages')
 #vk_session.auth()
@@ -128,10 +130,9 @@ def autoDel(head):
 token = ""
 vk_session = VkApi(token = token)
 
-
 session_api = vk_session.get_api()
 head = createLinkedList()
-group_chat = {'9303' : 2000000001}
+group_chat = {'9303' : 2000000003}
 
 while True:
     longpoll = VkBotLongPoll(vk_session, "194170086")
@@ -152,14 +153,13 @@ while True:
                     message = event.obj['text']
                     response = message.lower()
                     if response.find("андрей сергеевич,") == 0 and (response.find("deadline") != -1 or response.find("дедлайн") != -1 or response.find("срок") != -1):
-                        send_message_user(session_api, event.obj['from_id'], message=printLL(head))
+                        send_message_user(session_api, event.obj['from_id'], message=printLL(head), attachment = attachment['hat'][random.randint(0, len(attachment['hat'])-1)])
                         continue
                 if event.from_chat:
                     message = event.obj['text']
                     response = message.lower()
                     if response.find("андрей сергеевич,") == 0 and (response.find("deadline") != -1 or response.find("дедлайн") != -1 or response.find("срок") != -1):
-                        send_message_chat(session_api, event.obj['peer_id'], message=printLL(head))
+                        send_message_chat(session_api, event.obj['peer_id'], message=printLL(head), attachment = attachment['hat'][random.randint(0, len(attachment['hat'])-1)])
                         continue
     except requests.exceptions.ReadTimeout as timeout:
         continue
-
