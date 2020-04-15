@@ -111,7 +111,7 @@ def pushNote(head):
     answer = ''
     curr = head
     if curr != None:
-        now = datetime.datetime.today()
+        now = datetime.datetime.today() + datetime.datetime(0, 0, 0, 3, 0)
         delta = curr.date - now
     else:
         return answer
@@ -143,7 +143,7 @@ def pushNote(head):
 
 def autoDel(head):
     if(head):
-        now = datetime.datetime.today()
+        now = datetime.datetime.today() + datetime.datetime(0, 0, 0, 3, 0)
         curr = head
         while curr.date <= now: 
             if(curr.next):
