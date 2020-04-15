@@ -27,7 +27,7 @@ def createdeadLine(input_line):
         return None
 
 def logBack(head):
-    File = open('9303.txt', 'w')
+    File = open('./Like_a_bots/9303.txt', 'w')
     if head:
         curr = head
         while curr:
@@ -38,9 +38,9 @@ def logBack(head):
 
 def createLinkedList():
     try:
-        File = open('9303.txt', 'r')
+        File = open('./Like_a_bots/9303.txt', 'r')
     except FileNotFoundError:
-        File = open('9303.txt', 'w')
+        File = open('./Like_a_bots/9303.txt', 'w')
         return None
     Tasks = [line.strip() for line in File]
     if Tasks == []:
@@ -63,7 +63,7 @@ def pushNote(head):
     answer = ''
     curr = head
     if curr != None:
-        now = datetime.datetime.today() + datetime.datetime(0, 0, 0, 3, 0)
+        now = datetime.datetime.today() + datetime.timedelta(hours=3)
         delta = curr.date - now
     else:
         return answer
@@ -95,7 +95,7 @@ def pushNote(head):
 
 def autoDel(head):
     if(head):
-        now = datetime.datetime.today() + datetime.datetime(0, 0, 0, 3, 0)
+        now = datetime.datetime.today() + datetime.timedelta(hours=3)
         curr = head
         while curr.date <= now: 
             if(curr.next):
@@ -111,7 +111,7 @@ def autoDel(head):
 #vk_session = vk_api.VkApi(login, password, scope = 'messages')
 #vk_session.auth()
 
-token = ""
+token = "d934fe95dc96044df125497fb7508674cd0550ccfcb40aaf2e21ba963e015739e5738d3bf3e5dd028b341"
 vk_session = VkApi(token = token)
 
 
@@ -121,5 +121,6 @@ group_chat = {'9303' : 2000000001}
 
 head = autoDel(head)
 push = pushNote(head)
+print(push)
 if push != '':
     send_message_chat(session_api, group_chat['9303'], message=push)
