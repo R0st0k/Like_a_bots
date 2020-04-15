@@ -107,43 +107,9 @@ def printLL(head):
         answer = 'Так это, у вас ничего нет'
     return answer
 
-def pushNote(head):
-    answer = ''
-    curr = head
-    if curr != None:
-        now = datetime.datetime.today() + datetime.datetime(0, 0, 0, 3, 0)
-        delta = curr.date - now
-    else:
-        return answer
-    one = False
-    three = False
-    while delta.days == 0:
-        if not one:
-            answer = answer+'Сроки, до которых меньше 1 дня:\n'
-            one = True
-        answer = answer+str(curr.date.strftime("%d.%m %H:%M - "))+curr.task+'\n'
-        if curr.next != None:
-            curr = curr.next
-            delta = curr.date - now
-        else:
-            return answer
-    if one:
-        answer = answer + '\n'
-    while 1 <= delta.days <= 2:
-        if not three :
-            answer = answer+'Сроки, до которых меньше 3 дней:\n'
-            three = True
-        answer = answer+str(curr.date.strftime("%d.%m %H:%M - "))+curr.task+'\n'
-        if curr.next != None:
-            curr = curr.next
-            delta = curr.date - now
-        else:
-            return answer
-    return answer
-
 def autoDel(head):
     if(head):
-        now = datetime.datetime.today() + datetime.datetime(0, 0, 0, 3, 0)
+        now = datetime.datetime.today() + datetime.timedelta(hours=3)
         curr = head
         while curr.date <= now: 
             if(curr.next):
@@ -171,9 +137,6 @@ while True:
     longpoll = VkBotLongPoll(vk_session, "194170086")
     try:
         head = autoDel(head)
-        push = pushNote(head)
-        if push != '':
-            send_message_chat(session_api, group_chat['9303'], message=push)
         for event in longpoll.listen():
             if event.type == VkBotEventType.MESSAGE_NEW:
                 head = autoDel(head)
