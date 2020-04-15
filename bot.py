@@ -127,7 +127,7 @@ attachment = { 'hat' : ['photo-194170086_457239019','photo-194170086_457239020',
 #vk_session = vk_api.VkApi(login, password, scope = 'messages')
 #vk_session.auth()
 
-token = ""
+token = "2ba49e2e0fd46ce7a53ce52846ae1428f00f37f608277f9a99b97de3a7dd1681703b754e01047e7dae78d"
 vk_session = VkApi(token = token)
 
 session_api = vk_session.get_api()
@@ -155,11 +155,18 @@ while True:
                     if response.find("андрей сергеевич,") == 0 and (response.find("deadline") != -1 or response.find("дедлайн") != -1 or response.find("срок") != -1):
                         send_message_user(session_api, event.obj['from_id'], message=printLL(head), attachment = attachment['hat'][random.randint(0, len(attachment['hat'])-1)])
                         continue
+                    if response.find("андрей сергеевич, да") == 0:
+                        send_message_user(session_api, event.obj['from_id'], attachment = attachment['yes'][random.randint(0, len(attachment['yes'])-1)])
+                        continue
                 if event.from_chat:
                     message = event.obj['text']
                     response = message.lower()
                     if response.find("андрей сергеевич,") == 0 and (response.find("deadline") != -1 or response.find("дедлайн") != -1 or response.find("срок") != -1):
                         send_message_chat(session_api, event.obj['peer_id'], message=printLL(head), attachment = attachment['hat'][random.randint(0, len(attachment['hat'])-1)])
                         continue
+                    if response.find("андрей сергеевич, да") == 0:
+                        send_message_user(session_api, event.obj['peer_id'], attachment = attachment['yes'][random.randint(0, len(attachment['yes'])-1)])
+                        continue
     except requests.exceptions.ReadTimeout as timeout:
         continue
+
