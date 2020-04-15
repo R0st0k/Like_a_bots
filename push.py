@@ -123,5 +123,3 @@ head = autoDel(head)
 push = pushNote(head)
 if push != '':
     send_message_chat(session_api, group_chat['9303'], message=push)
-
-return 0
