@@ -159,7 +159,7 @@ def autoDel(head):
 #vk_session = vk_api.VkApi(login, password, scope = 'messages')
 #vk_session.auth()
 
-token = "b212e808e685d53bae44e644ec8970c51ea2bb73c45a781e0c15ca326ed613c37fbd031148241174fc0b1"
+token = ""
 vk_session = VkApi(token = token)
 
 
