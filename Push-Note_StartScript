@@ -1,0 +1,4 @@
+#!/bin/bash
+echo $(date)
+echo $(python3 ./Like_a_bots/Push-Note.py)
+exit

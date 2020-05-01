@@ -31,7 +31,7 @@ def logBack(head):
     if head:
         curr = head
         while curr:
-            File.write(str(curr.date.strftime("%m.%e.%H.%M."))+curr.task+'\n')
+            File.write(str(curr.date.strftime("%m.%d.%H.%M."))+curr.task+'\n')
             curr = curr.next
     File.close()
     
@@ -69,11 +69,12 @@ def pushNote(head):
         return answer
     one = False
     three = False
+    seven = False
     while delta.days == 0:
         if not one:
             answer = answer+'Сроки, до которых меньше 1 дня:\n'
             one = True
-        answer = answer+str(curr.date.strftime("%d.%m %H:%M - "))+curr.task+'\n'
+        answer = answer+str(curr.date.strftime("%e.%m %H:%M - "))+curr.task+'\n'
         if curr.next != None:
             curr = curr.next
             delta = curr.date - now
@@ -85,6 +86,18 @@ def pushNote(head):
         if not three :
             answer = answer+'Сроки, до которых меньше 3 дней:\n'
             three = True
+        answer = answer+str(curr.date.strftime("%d.%m %H:%M - "))+curr.task+'\n'
+        if curr.next != None:
+            curr = curr.next
+            delta = curr.date - now
+        else:
+            return answer
+    if three:
+        answer = answer + '\n'
+    while 3 <= delta.days <= 6:
+        if not seven:
+            answer = answer+'Сроки, до которых меньше 7 дней:\n'
+            seven = True
         answer = answer+str(curr.date.strftime("%d.%m %H:%M - "))+curr.task+'\n'
         if curr.next != None:
             curr = curr.next
@@ -124,4 +137,3 @@ push = pushNote(head)
 print(push)
 if push != '':
     send_message_chat(session_api, group_chat['9303'], message=push)
-

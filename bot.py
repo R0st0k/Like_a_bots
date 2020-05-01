@@ -31,7 +31,7 @@ def logBack(head):
     if head:
         curr = head
         while curr:
-            File.write(str(curr.date.strftime("%m.%e.%H.%M."))+curr.task+'\n')
+            File.write(str(curr.date.strftime("%m.%d.%H.%M."))+curr.task+'\n')
             curr = curr.next
     File.close()
     
@@ -136,37 +136,33 @@ group_chat = {'9303' : 2000000003}
 
 while True:
     longpoll = VkBotLongPoll(vk_session, "194170086")
-    try:
-        head = autoDel(head)
-        for event in longpoll.listen():
-            if event.type == VkBotEventType.MESSAGE_NEW:
-                head = autoDel(head)
-                if event.from_user and (event.obj['from_id'] == 176002643 or event.obj['from_id'] == 301186592):
-                    response = event.obj['text']
-                    if response.find("Удали") == 0:
-                        head = removeEl(head, response[6:])
-                        continue
-                    if response.find("Добавь") == 0:
-                        head = newElem(createdeadLine(response[7:]), head)
-                        continue
-                if event.from_user:
-                    message = event.obj['text']
-                    response = message.lower()
-                    if response.find("андрей сергеевич,") == 0 and (response.find("deadline") != -1 or response.find("дедлайн") != -1 or response.find("срок") != -1):
-                        send_message_user(session_api, event.obj['from_id'], message=printLL(head), attachment = attachment['hat'][random.randint(0, len(attachment['hat'])-1)])
-                        continue
-                    if response == 'да':
-                        send_message_user(session_api, event.obj['from_id'], attachment = attachment['yes'][random.randint(0, len(attachment['yes'])-1)])
-                        continue
-                if event.from_chat:
-                    message = event.obj['text']
-                    response = message.lower()
-                    if response.find("андрей сергеевич,") == 0 and (response.find("deadline") != -1 or response.find("дедлайн") != -1 or response.find("срок") != -1):
-                        send_message_chat(session_api, event.obj['peer_id'], message=printLL(head), attachment = attachment['hat'][random.randint(0, len(attachment['hat'])-1)])
-                        continue
-                    if response == 'да':
-                        send_message_user(session_api, event.obj['peer_id'], attachment = attachment['yes'][random.randint(0, len(attachment['yes'])-1)])
-                        continue
-    except requests.exceptions.ReadTimeout as timeout:
-        continue
-
+    head = autoDel(head)
+    for event in longpoll.listen():
+        if event.type == VkBotEventType.MESSAGE_NEW:
+            head = autoDel(head)
+            if event.from_user and (event.obj['from_id'] == 176002643 or event.obj['from_id'] == 301186592):
+                response = event.obj['text']
+                if response.find("Удали") == 0:
+                    head = removeEl(head, response[6:])
+                    continue
+                if response.find("Добавь") == 0:
+                    head = newElem(createdeadLine(response[7:]), head)
+                    continue
+            if event.from_user:
+                message = event.obj['text']
+                response = message.lower()
+                if response.find("андрей сергеевич,") == 0 and (response.find("deadline") != -1 or response.find("дедлайн") != -1 or response.find("срок") != -1):
+                    send_message_user(session_api, event.obj['from_id'], message=printLL(head), attachment = attachment['hat'][random.randint(0, len(attachment['hat'])-1)])
+                    continue
+                if response == 'да':
+                    send_message_user(session_api, event.obj['from_id'], attachment = attachment['yes'][0])
+                    continue
+            if event.from_chat:
+                message = event.obj['text']
+                response = message.lower()
+                if response.find("андрей сергеевич,") == 0 and (response.find("deadline") != -1 or response.find("дедлайн") != -1 or response.find("срок") != -1):
+                    send_message_chat(session_api, event.obj['peer_id'], message=printLL(head), attachment = attachment['hat'][random.randint(0, len(attachment['hat'])-1)])
+                    continue
+                if response == 'да':
+                    send_message_chat(session_api, event.obj['peer_id'], attachment = attachment['yes'][0])
+                    continue
